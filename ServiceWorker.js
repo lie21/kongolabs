@@ -1,9 +1,9 @@
 const cacheName = "DefaultCompany-kongolabs-0.1.0";
 const contentToCache = [
     "Build/kongolabs.loader.js",
-    "Build/kongolabs.framework.js.br",
-    "Build/kongolabs.data.br",
-    "Build/kongolabs.wasm.br",
+    "Build/kongolabs.framework.js.unityweb",
+    "Build/kongolabs.data.unityweb",
+    "Build/kongolabs.wasm.unityweb",
     "TemplateData/style.css"
 
 ];
