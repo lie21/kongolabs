@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content='width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes'>
-    <title>kongolabs</title>
+    <title>Mr Dog</title>
     <link rel="stylesheet" href="TemplateData/style.css">
 
     <script>
@@ -56,10 +56,19 @@
     <video id="webcam-video" muted autoplay playsinline style="width:1px;position:absolute"></video>
     <canvas id="video-canvas" style="width:100%; height:100%; object-fit:cover; position:absolute"></canvas>
     <div id="startARDiv" class="ctaDiv">
+        <div class="permission">
+            <img src="TemplateData/icCameraPaw.png" style="margin-top: 14px;" alt="">
+            <p class="accesstitle">Izinkan Akses Kamera</p>
+            <p class="cameradesc">Untuk menggunakan fitur augmentasi di aplikasi, mohon berikan izin untuk akses ke fitur kamera.</p>
+            <div class="line"></div>
+            <button id="startARButton" class="btn-permission yes" onclick="StartAR()" style="right: 20%;">Izinkan</button>
+            <button class="btn-permission no" style="left: 20%;">Tolak</button>
+        </div>
         <select id="chooseCamSel" style="display: none;" onchange="SelectCam()"></select>
-        <p style="text-align: center; width:60vw">This augmented reality experience requires access to your device's camera and motion sensors</p>
-        <button id="startARButton" style="display:none" onclick="StartAR()">ALLOW ACCESS</button>
-    </div>
+        <!-- <p style="text-align: center; width:60vw;">This augmented reality experience requires access to your device's
+            camera</p>
+        <button id="startARButton" onclick="StartAR()" style="display:none">ALLOW ACCESS</button> -->
+    </div>  
     <div id="screenshotDiv" style="display: none;" class="ctaDiv">
         <div style="position:relative; background-color:white; padding:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.25);">
             <img id="screenshotImg" src="" alt="screenshot" style="width:80vw; height:80vh">
@@ -82,10 +91,17 @@
     <video id="recording" style="width: 50vw; height: 50vh; position: absolute; display: none;" controls></video>
     <div id="photo-output" style="width: 50vw; height: 50vh; position: absolute; display: none;"></div>
     <canvas id="combinedCanvas" style="width: 100vw; height: 100vh;"></canvas>
-    
+    <div class="loading-page">
+        <img src="TemplateData/pawLoad.gif" width="50px" alt="">
+        <div class="loadingtext">
+            Loading...<br>
+            10%
+        </div>        
+    </div>
+
     <script src="arcamera.js" type="text/javascript"></script>
     <script src="wtracker.js" type="text/javascript"></script>
-    <script src="Build/kongolabs2.loader.js"></script>
+    <script src="Build/kongolabs-build.loader.js"></script>
     <script>
         var initialize = async() =>{
             var unityCanvas = document.querySelector("#unity-canvas");
@@ -113,18 +129,19 @@
         var canvas = document.querySelector("#unity-canvas");
         var loadingBar = document.querySelector("#unity-loading-bar");
         var progressBarFull = document.querySelector("#unity-progress-bar-full");
+        var loadingtext = document.querySelector('.loadingtext');
         function StartAR() {
             canvas.style.width = window.innerWidth + "px";
             canvas.style.height = window.innerHeight + "px";
             
             document.getElementById('startARDiv').style.display = 'none';
             createUnityInstance(document.querySelector("#unity-canvas"), {
-                    dataUrl: "Build/kongolabs2.data.unityweb",
-                    frameworkUrl: "Build/kongolabs2.framework.js.unityweb",
-                    codeUrl: "Build/kongolabs2.wasm.unityweb",
+                    dataUrl: "Build/kongolabs-build.data.unityweb",
+                    frameworkUrl: "Build/kongolabs-build.framework.js.unityweb",
+                    codeUrl: "Build/kongolabs-build.wasm.unityweb",
                     streamingAssetsUrl: "StreamingAssets",
-                    companyName: "DefaultCompany",
-                    productName: "kongolabs",
+                    companyName: "MonsterAR",
+                    productName: "Mr Dog",
                     productVersion: "0.1.0",
                     //webglContextAttributes: { "preserveDrawingBuffer": true },
                     // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
@@ -132,6 +149,7 @@
                     },
                     (progress) => {
                         progressBarFull.style.width = 100 * progress + "%";
+                        loadingtext.innerHTML = `Loading...<br>${(100 * progress).toFixed(0)}%`;
                     }
                 ).then((unityInstance) => {
                 window.unityInstance = unityInstance;
@@ -144,7 +162,7 @@
 
             
             
-            loadingBar.style.display = "block";
+            loadingBar.style.display = "none";
         }
 
         //Set Facing Mode here ('environment', 'user', '')
@@ -360,7 +378,7 @@
 
       function downloadImage() {
           console.log(link.href);
-          link.download = "image.png";
+          link.download = "MrDog.png";
           var event = document.createEvent("MouseEvents");
           event.initMouseEvent("click");
           link.dispatchEvent(event);
@@ -400,7 +418,7 @@
                 let recordedBlob = new Blob(data, { type: "video/mp4" });
                 recording.src = URL.createObjectURL(recordedBlob);
                 downloadButton.href = recording.src;
-                downloadButton.download = "RecordedVideo.mp4";
+                downloadButton.download = "MrDog.mp4";
                 console.log(`Successfully recorded ${recordedBlob.size} bytes of ${recordedBlob.type} media.`);
 
                 //Creating an actual File
@@ -485,7 +503,6 @@
         //         combinedContext.drawImage(canvasUnity, 0, 0, window.innerWidth, window.innerHeight);
         //     }, 100); // Combine both canvases every 100ms
         // }
-
         const sourceCanvas = canvasUnity;
         const cropCanvas = document.createElement("canvas");
         const cropHeight = window.innerHeight-200; // potong 50 px dari bawah
@@ -496,9 +513,7 @@
         
         function combineCanvases() {           
             ctx.drawImage(
-                sourceCanvas,
-                0, 0, sourceCanvas.width, cropHeight, // sumber (tanpa 50px bawah)
-                0, 0, cropCanvas.width, cropCanvas.height // target penuh
+                sourceCanvas, 0, 0, window.innerWidth, window.innerHeight
             );
             requestAnimationFrame(combineCanvases);
         }
@@ -507,6 +522,7 @@
             let canvasStream = cropCanvas.captureStream(30); // Capture screen in 30 FPS
             startRecording(canvasStream);
         }
+        
         function stopVideo(){
             stopRecording();
             console.log("Supposed to be stop video")
